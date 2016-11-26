@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="theme-color" content="#292929">
+  <link rel="icon" sizes="256x256" href="icon.png">
+  <title>skrôl</title>
+  <script>
+    document.onreadystatechange = function () {
+      if (document.readyState === 'interactive') {
+        const params = new window.URLSearchParams(window.location.search)
+        const content = document.body
+
+        // Load content from URL, if any.
+        const load = function () {
+          content.innerHTML = params.get('d')
+        }
+        // Save content to the URL.
+        const save = function () {
+          params.set('d', content.innerHTML)
+          window.history.replaceState({}, '', window.location.pathname + '?' + params)
+        }
+        // Update title from content.
+        const title = function () {
+          for (let line of content.innerHTML.split('<br>')) {
+            if (line) {
+              document.title = 'skrôl' + ' - ' + line
+              break
+            }
+          }
+        }
+        // Place caret at the end of content.
+        const focus = function () {
+          if (!content.innerHTML.trim().replace('<br>', '')) {
+            setTimeout(function () { content.focus() }, 0)
+          } else {
+            content.focus()
+            let range = document.createRange()
+            range.selectNodeContents(content)
+            range.collapse(false)
+            let sel = window.getSelection()
+            sel.removeAllRanges()
+            sel.addRange(range)
+          }
+        }
+
+        // Hook up save routine.
+        let cooldown = false
+        content.oninput = function () {
+          if (!cooldown) {
+            setTimeout(
+              function () {
+                save()
+                title()
+                cooldown = false
+              },
+              1 * 1000
+            )
+          }
+          cooldown = true
+        }
+
+        // Initialize.
+        load()
+        title()
+        focus()
+      }
+    }
+  </script>
+  <style>
+    html {
+      background: #292929;
+    }
+    body {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 2rem;
+      min-height: 100vh;
+      background: #333;
+      color: #ccc;
+      font-size: 18px;
+      line-height: 1.5em;
+      font-family: 'Fira Code', 'Fira Mono', 'Consolas', monospace;
+    }
+  </style>
+</head>
+<body contenteditable="true"></body>
+</html>
