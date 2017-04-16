@@ -63,7 +63,7 @@
 
         // Let tabs be tabs~
         document.onkeydown = function (e) {
-          console.log(e.keyCode)
+          // DEBUG: console.log(e.keyCode)
           if (e.keyCode === 9) {
             // TODO: Consider indent/outdent for selections with tab/shift+tab.
             document.execCommand('insertHTML', false, '&#009')
