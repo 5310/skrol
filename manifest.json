@@ -3,7 +3,7 @@
   "short_name": "Skrôl",
   "description": "A trivial url-saving scratchpad.",
   "lang": "en-US",
-  "start_url": "/",
+  "start_url": "/skrol",
   "display": "standalone",
   "orientation": "portrait",
   "theme_color": "#292929",
