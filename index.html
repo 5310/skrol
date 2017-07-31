@@ -4,8 +4,22 @@
   <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
   <meta name="mobile-web-app-capable" content="yes">
   <meta name="theme-color" content="#292929">
-  <link rel="icon" sizes="256x256" href="icon.png">
+  <link rel="icon" type="image/png" sizes="256x256" href="icon.256.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="icon.32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="icon.16.png">
+  <link rel="manifest" href="manifest.json">
   <title>skrôl</title>
+  <script>
+    if (location.protocol == 'http:') location.protocol = 'https:'
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('sw.js')
+        .then(reg => console.log('Service Worker registered', reg))
+        .catch(err => console.error('Service Worker **not** registered', err))
+    }
+    else {
+      console.warn('Service Worker not supported in this browser')
+    }
+  </script>
   <script>
     document.onreadystatechange = function () {
       if (document.readyState === 'interactive') {

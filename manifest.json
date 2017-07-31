@@ -1,0 +1,23 @@
+{
+  "name": "Skrôl",
+  "short_name": "Skrôl",
+  "description": "A trivial url-saving scratchpad.",
+  "lang": "en-US",
+  "start_url": "/",
+  "display": "standalone",
+  "orientation": "portrait",
+  "theme_color": "#292929",
+  "background_color": "#292929",
+  "icons": [
+    {
+        "src": "icon.192.png",
+        "sizes": "192x192",
+        "type": "image/png"
+    },
+    {
+        "src": "icon.256.png",
+        "sizes": "256x256",
+        "type": "image/png"
+    }
+  ]
+}
