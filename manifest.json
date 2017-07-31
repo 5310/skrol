@@ -2,7 +2,6 @@
   "name": "Skrôl",
   "short_name": "Skrôl",
   "description": "A trivial url-saving scratchpad.",
-  "lang": "en-US",
   "start_url": "/",
   "display": "standalone",
   "orientation": "portrait",
@@ -15,8 +14,8 @@
         "type": "image/png"
     },
     {
-        "src": "icon.256.png",
-        "sizes": "256x256",
+        "src": "icon.512.png",
+        "sizes": "512x512",
         "type": "image/png"
     }
   ]
