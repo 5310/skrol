@@ -76,13 +76,17 @@
           cooldown = true
         }
 
-        // Let tabs be tabs~
         document.onkeydown = function (e) {
-          // DEBUG: console.log(e.keyCode)
-          if (e.keyCode === 9) {
-            // TODO: Consider indent/outdent for selections with tab/shift+tab.
-            document.execCommand('insertHTML', false, '&#009')
-            e.preventDefault()
+          switch (e.keyCode) {
+            case 9: // Let tabs be tabs~
+              // TODO: Consider indent/outdent for selections with tab/shift+tab.
+              document.execCommand('insertHTML', false, '&#9')
+              e.preventDefault()
+              break
+            case 13: // Override newline to be just `<br>` without wrapping `<div>`s
+              document.execCommand('insertHTML', false, '<br>')
+              e.preventDefault()
+              break
           }
         }
 
