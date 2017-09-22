@@ -11,7 +11,7 @@
   <link rel="manifest" href="manifest.json">
   <title>skrôl</title>
   <script>
-    if (location.protocol == 'http:') location.protocol = 'https:'
+    if (location.protocol === 'http:') location.protocol = 'https:'
     if ('serviceWorker' in navigator) {
       navigator.serviceWorker.register('sw.js')
         .then(reg => console.log('Service Worker registered', reg))
