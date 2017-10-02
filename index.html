@@ -32,7 +32,10 @@
         }
         // Save content to the URL.
         const save = function () {
-          params.set('d', content.innerHTML)
+          params.set('d', content.innerHTML // Replace div soup with newlines.
+            .replace(/<div>/g, '\n')
+            .replace(/<\/?(div|br)>/g, '')
+          )
           window.history.replaceState({}, '', window.location.pathname + '?' + params)
         }
         // Update title from content.
@@ -75,15 +78,12 @@
           cooldown = true
         }
 
+        // Override keys.
         document.onkeydown = function (e) {
           switch (e.keyCode) {
             case 9: // Let tabs be tabs~
-              // TODO: Consider indent/outdent for selections with tab/shift+tab.
+            // TODO: Consider `document.execCommand('indent')` and `outdent`
               document.execCommand('insertHTML', false, '&#9')
-              e.preventDefault()
-              break
-            case 13: // TODO: Caret doesn't move to new line visually, but does in function.
-              document.execCommand('insertHTML', false, '\n')
               e.preventDefault()
               break
           }
