@@ -42,8 +42,18 @@
           params.delete('s')
           window.history.pushState({}, '', window.location.pathname + '?' + params)
           save()
+        } else if (params.has('d')) content.innerHTML = params.get('d')
+        else {
+          content.innerHTML = 'Type anything. Ctrl+S to save.'
+          setTimeout(() => {
+            content.focus()
+            let range = document.createRange()
+            range.selectNodeContents(content)
+            let sel = window.getSelection()
+            sel.removeAllRanges()
+            sel.addRange(range)
+          }, 0)
         }
-        if (params.has('d')) content.innerHTML = params.get('d')
       }
       // Save content to the URL.
       const save = function () {
@@ -146,6 +156,9 @@
       line-height: 1.5em;
       font-family: 'Fira Code', 'Fira Mono', 'Consolas', monospace;
       white-space: pre-wrap;
+    }
+    body::selection {
+      background: #aaa;
     }
   </style>
 </head>
