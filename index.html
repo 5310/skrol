@@ -57,6 +57,7 @@
       }
       // Save content to the URL.
       const save = function () {
+        params.delete('s')
         params.set('d', content.innerHTML // Replace div soup with newlines.
           .replace(/<div>/g, '\n')
           .replace(/<\/?(div|br)>/g, '')
