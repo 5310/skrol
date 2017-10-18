@@ -55,6 +55,7 @@
       }
       // Shorten content to is.gd
       const shorten = async function () {
+        if (params.has('s')) return
         const shortUrl = await shortenUrl(window.location.href)
         const key = new URL(shortUrl).pathname.slice(1)
         params.delete('d')
