@@ -21,80 +21,114 @@
     }
   </script>
   <script>
-    document.onreadystatechange = function () {
-      if (document.readyState === 'interactive') {
-        const params = new window.URLSearchParams(window.location.search)
-        const content = document.body
+  const shortenUrl = url =>
+    fetch('https://is.gd/create.php?format=json&url=' + encodeURIComponent(url))
+      .then(res => res.json())
+      .then(({shorturl}) => shorturl)
+  const lookupUrl = shorturl =>
+    fetch('https://is.gd/forward.php?format=json&shorturl=' + encodeURIComponent(shorturl))
+      .then(res => res.json())
+      .then(({url}) => url)
 
-        // Load content from URL, if any.
-        const load = function () {
-          content.innerHTML = params.get('d')
+  document.onreadystatechange = async function () {
+    if (document.readyState === 'interactive') {
+      const params = new window.URLSearchParams(window.location.search)
+      const content = document.body
+
+      // Load content from URL, if any.
+      const load = async function () {
+        if (params.has('s')) {
+          content.innerHTML = new URLSearchParams(new URL(await lookupUrl('https://is.gd/' + params.get('s'))).search).get('d')
+          params.delete('s')
+          window.history.pushState({}, '', window.location.pathname + '?' + params)
+          save()
         }
-        // Save content to the URL.
-        const save = function () {
-          params.set('d', content.innerHTML // Replace div soup with newlines.
-            .replace(/<div>/g, '\n')
-            .replace(/<\/?(div|br)>/g, '')
+        if (params.has('d')) content.innerHTML = params.get('d')
+      }
+      // Save content to the URL.
+      const save = function () {
+        params.set('d', content.innerHTML // Replace div soup with newlines.
+          .replace(/<div>/g, '\n')
+          .replace(/<\/?(div|br)>/g, '')
+        )
+        window.history.replaceState({}, '', window.location.pathname + '?' + params)
+      }
+      // Shorten content to is.gd
+      const shorten = async function () {
+        const shortUrl = await shortenUrl(window.location.href)
+        const key = new URL(shortUrl).pathname.slice(1)
+        params.delete('d')
+        params.set('s', key)
+        window.history.replaceState({}, '', window.location.pathname + '?' + params)
+      }
+      // Update title from content.
+      const title = function () {
+        for (let line of content.innerHTML.split('<br>')) {
+          if (line) {
+            document.title = 'skrôl' + ' - ' + line
+            break
+          }
+        }
+      }
+      // Place caret at the end of content.
+      const focus = function () {
+        if (!content.innerHTML.trim().replace('<br>', '')) {
+          setTimeout(function () { content.focus() }, 0)
+        } else {
+          content.focus()
+          let range = document.createRange()
+          range.selectNodeContents(content)
+          range.collapse(false)
+          let sel = window.getSelection()
+          sel.removeAllRanges()
+          sel.addRange(range)
+        }
+      }
+
+      // Hook up save routine.
+      let cooldown = false
+      content.oninput = function () {
+        if (!cooldown) {
+          setTimeout(
+            async function () {
+              await save()
+              title()
+              cooldown = false
+            },
+            1 * 1000
           )
-          window.history.replaceState({}, '', window.location.pathname + '?' + params)
         }
-        // Update title from content.
-        const title = function () {
-          for (let line of content.innerHTML.split('<br>')) {
-            if (line) {
-              document.title = 'skrôl' + ' - ' + line
+        cooldown = true
+      }
+  
+      // TODO: Add a FAB or something for mobile?
+
+      // Override keys.
+      document.onkeydown = function (e) {
+        if (e.ctrlKey) {
+          switch (e.keyCode) {
+            case 83: // Save on Ctrk+S
+              shorten()
+              e.preventDefault()
               break
-            }
           }
-        }
-        // Place caret at the end of content.
-        const focus = function () {
-          if (!content.innerHTML.trim().replace('<br>', '')) {
-            setTimeout(function () { content.focus() }, 0)
-          } else {
-            content.focus()
-            let range = document.createRange()
-            range.selectNodeContents(content)
-            range.collapse(false)
-            let sel = window.getSelection()
-            sel.removeAllRanges()
-            sel.addRange(range)
-          }
-        }
-
-        // Hook up save routine.
-        let cooldown = false
-        content.oninput = function () {
-          if (!cooldown) {
-            setTimeout(
-              function () {
-                save()
-                title()
-                cooldown = false
-              },
-              1 * 1000
-            )
-          }
-          cooldown = true
-        }
-
-        // Override keys.
-        document.onkeydown = function (e) {
+        } else {
           switch (e.keyCode) {
             case 9: // Let tabs be tabs~
-            // TODO: Consider `document.execCommand('indent')` and `outdent`
+              // TODO: Consider `document.execCommand('indent')` and `outdent`
               document.execCommand('insertHTML', false, '&#9')
               e.preventDefault()
               break
           }
         }
-
-        // Initialize.
-        load()
-        title()
-        focus()
       }
+
+      // Initialize.
+      await load()
+      title()
+      focus()
     }
+  }
   </script>
   <style>
     html {
