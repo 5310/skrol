@@ -1,4 +1,4 @@
-# [skrôl](https://5310.github.io/skrol)
+# [skrôl](https://5310.github.io/skrol) GLITCH EDITION
 
 ...Is a trivial url-saving scratchpad.
 
